@@ -201,7 +201,7 @@ if __name__ == "__main__":
 
     # finalize generated adata object
     _add_metadata(adata, t2g="${txp2gene}", sample="${meta.id}")
-    adata.write_h5ad("${meta.id}_${meta.input_type}_matrix.h5ad")
+    adata.write_h5ad("${meta.id}.h5ad")
 
     # dump versions
     dump_versions()

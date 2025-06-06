@@ -6,7 +6,13 @@ import sys
 
 def parse_samplesheet(samplesheet_path):
     # Define required headers
-    required_headers = ["sample", "multiplexed_sample_id", "description"]
+    required_headers = [
+        "sample",
+        "multiplexed_sample_id",
+        "probe_barcode_ids",
+        "cmo_ids",
+        "description",
+    ]
 
     # Define output directories
     cmo_output_dir = "cmo_files"
@@ -41,12 +47,18 @@ def parse_samplesheet(samplesheet_path):
 
             # Process FRNAs
             if "probe_barcode_ids" in headers and row["probe_barcode_ids"]:
+                if "+" in row["probe_barcode_ids"]:
+                    print("Detected paired probe and CRISPR barcodes in 'probe_barcode_ids'")
                 frna_filename = os.path.join(frna_output_dir, f"{sample}_frna.csv")
                 with open(frna_filename, 'a', newline='') as frna_file:
                     frna_writer = csv.writer(frna_file)
                     if not os.path.exists(frna_filename) or os.stat(frna_filename).st_size == 0:
                         frna_writer.writerow(["sample_id", "probe_barcode_ids", "description"])
-                    frna_writer.writerow([multiplexed_sample_id, row["probe_barcode_ids"], description])
+                    frna_writer.writerow([
+                        multiplexed_sample_id,
+                        row["probe_barcode_ids"],
+                        description,
+                    ])
 
     print("Parsing completed successfully.")
     return True

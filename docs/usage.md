@@ -275,6 +275,7 @@ PBMC_10K_CMO,PBMC_10K_CMO_PBMCs_human_2,,CMO302,PBMCs_human_2
 ```
 
 The `sample` column must match the corresponding entry in the main samplesheet.
+The barcodes CSV must contain the columns `sample`, `multiplexed_sample_id`, `probe_barcode_ids`, `cmo_ids` and `description`.
 
 #### Additional reference data
 
@@ -284,8 +285,8 @@ The `sample` column must match the corresponding entry in the main samplesheet.
 
   > When running cellranger multi, without any VDJ data, users can also skip VDJ automated ref building with: `--skip_cellrangermulti_vdjref`.
 
-- When working with **FFPE data**, a prob set needs to be specified via `--gex_frna_probe_set`. This file is typically
-  [provided by 10x](https://www.10xgenomics.com/support/software/cell-ranger/downloads#probe-set-downloads).
+- When working with **FFPE or 10x Flex data**, a probe set needs to be specified via `--gex_frna_probe_set`. This file is typically
+  [provided by 10x](https://www.10xgenomics.com/support/software/cell-ranger/downloads#probe-set-downloads) and is required when analysing fixed RNA profiling libraries.
 
 - When working with **Cell Multiplexing Oligos (CMOs)**, a reference file needs to be provided via `--gex_cmo_set`. The
   default reference file, as well as a description how to write a custom one, are [available from the 10x documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/running-pipelines/cr-3p-multi#cmo-ref)

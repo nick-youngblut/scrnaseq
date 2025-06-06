@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move `txp2gene` to `reference_genome_options` in schema as it is required by `kb_python` and `alevin` ([434](https://github.com/nf-core/scrnaseq/pull/434))
 - Fix of additional path splitting for `txp2gene` ([433](https://github.com/nf-core/scrnaseq/pull/433))
 - Add a checker so that `--fb_reference` does not break the pipeline in case `ab` files are not used in `cellranger multi` sub-workflow.
+- Added support for 10x Flex fixed RNA profiling libraries in the `cellranger multi` workflow.
 - Fix concatenation of multiple samples into the combined output AnnData ([416](https://github.com/nf-core/scrnaseq/pull/416))
 - Make sure STARsolo velocity output is added to the combined output AnnData, if `star_feature = 'Gene Velocyto'` ([417](https://github.com/nf-core/scrnaseq/pull/417))
 - Update cellbender module to latest nf-core version ([#419](https://github.com/nf-core/scrnaseq/pull/419/))

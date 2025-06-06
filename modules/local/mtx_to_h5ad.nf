@@ -19,7 +19,7 @@ process MTX_TO_H5AD {
     val input_aligner
 
     output:
-    tuple val(meta), path("${meta.id}_${meta.input_type}_matrix.h5ad"), emit: h5ad
+    tuple val(meta), path("${meta.id}.h5ad"), emit: h5ad
     path  "versions.yml"                                              , emit: versions
 
     when:
@@ -32,7 +32,7 @@ process MTX_TO_H5AD {
 
     stub:
     """
-    touch ${meta.id}_${meta.input_type}_matrix.h5ad
+    touch ${meta.id}.h5ad
     touch versions.yml
     """
 }

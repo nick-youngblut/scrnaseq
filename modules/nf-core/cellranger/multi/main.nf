@@ -126,7 +126,7 @@ process CELLRANGER_MULTI {
     fastq_antibody = include_fb && ab_options_use     ? "${meta_ab.id},./fastq_all/ab,,Antibody Capture"             : ''
     fastq_beam     = include_beam                     ? "${meta_beam.id},./fastq_all/beam,,Antigen Capture"         : ''
     fastq_crispr   = include_fb && crispr_options_use ? "${meta_crispr.id},./fastq_all/crispr,,CRISPR Guide Capture" : ''
-    fastq_cmo      = include_cmo                      ? "${meta_cmo.id},./fastq_all/cmo,,Multiplexing Capture"       : ''
+    fastq_cmo      = include_cmo                      ? "${meta_cmo.id},./fastq_all/cmo,,Antibody Capture"       : ''
 
     // name the config file
     config = "cellranger_multi_config.csv"
