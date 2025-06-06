@@ -190,6 +190,16 @@ def validateInputSamplesheet(input) {
     if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
+    def feature_types = metas.collect{ it.feature_type }.unique()
+    if (feature_types.contains("vdj") && !params.cellranger_vdj_index) {
+        error("VDJ libraries present but --cellranger_vdj_index was not supplied")
+    }
+    if (feature_types.intersect(["ab","crispr"]).size() > 0 && !params.fb_reference) {
+        error("Feature barcode reference (--fb_reference) required for antibody or CRISPR libraries")
+    }
+    if (feature_types.contains("cmo") && !params.cellranger_multi_barcodes) {
+        error("Cell hashing libraries detected but --cellranger_multi_barcodes not provided")
+    }
 
     return [ metas[0], fastqs ]
 }

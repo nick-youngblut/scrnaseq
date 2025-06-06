@@ -104,6 +104,9 @@ workflow CELLRANGER_MULTI_ALIGN {
             .map { if ( it.size() == 2 ) { it[1] } else { [] } } // a correct tuple from snippet will have: [ sample, frna.csv ]
             .set { ch_frna_sample_csv }
 
+            if (ch_frna_sample_csv.size() > 0 && !params.gex_frna_probe_set) {
+                error("Fixed RNA profiling barcodes detected but --gex_frna_probe_set not provided")
+            }
         } else {
             ch_cmo_barcode_csv = []
             ch_frna_sample_csv = []

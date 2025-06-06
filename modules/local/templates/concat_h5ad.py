@@ -54,17 +54,21 @@ if __name__ == "__main__":
     # Open samplesheet as dataframe
     df_samplesheet = read_samplesheet("${samplesheet}")
 
-    # find all h5ad and append to dict
-    dict_of_h5ad = {str(path).replace("_matrix.h5ad", ""): sc.read_h5ad(path) for path in Path(".").rglob("*.h5ad")}
+    # find all h5ad and append to list, keeping sample names
+    adatas = []
+    sample_names = []
+    for path in Path(".").rglob("*.h5ad"):
+        adatas.append(sc.read_h5ad(path))
+        sample_names.append(path.stem.replace("_matrix", ""))
 
-    # concat h5ad files
-    adata = ad.concat(dict_of_h5ad, label="sample", merge="unique", index_unique="_")
+    # concatenate using outer join on features
+    adata = ad.concat(adatas, merge="outer", label="sample", keys=sample_names)
 
     # merge with data.frame, on sample information
     adata.obs = adata.obs.join(df_samplesheet, on="sample", how="left").astype(str)
-    adata.write_h5ad("${meta.id}_${meta.input_type}_matrix.h5ad")
+    adata.write_h5ad("${meta.id}.h5ad")
 
-    print("Wrote h5ad file to {}".format("${meta.id}_${meta.input_type}_matrix.h5ad"))
+    print("Wrote h5ad file to {}".format("${meta.id}.h5ad"))
 
     # dump versions
     dump_versions()

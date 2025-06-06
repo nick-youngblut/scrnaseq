@@ -20,11 +20,12 @@ def _mtx_to_adata(
 
     adata = sc.read_10x_h5(input)
     adata.var["gene_symbols"] = adata.var_names
+    adata.var["feature_type"] = adata.var["feature_types"]
     adata.var.set_index("gene_ids", inplace=True)
     adata.obs["sample"] = sample
 
-    # reorder columns for 10x mtx files
-    adata.var = adata.var[["gene_symbols", "feature_types", "genome"]]
+    # reorder columns for 10x mtx files and keep feature type annotation
+    adata.var = adata.var[["gene_symbols", "feature_type", "genome"]]
 
     return adata
 
@@ -94,6 +95,6 @@ os.makedirs("${meta.id}", exist_ok=True)
 # input_type comes from NF module
 adata = input_to_adata(
     input_data=glob.glob("*${meta.input_type}_feature_bc_matrix.h5")[0], # cellrangermulti has 'sample_' as prefix
-    output="${meta.id}_${meta.input_type}_matrix.h5ad",
+    output="${meta.id}.h5ad",
     sample="${meta.id}"
 )
