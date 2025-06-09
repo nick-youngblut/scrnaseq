@@ -34,7 +34,7 @@ workflow SCRNASEQ {
     ch_versions      = Channel.empty()
     ch_mtx_matrices  = Channel.empty()
 
-    protocol_config = Utils.getProtocol(workflow, log, params.aligner, params.protocol)
+    def protocol_config = Utils.getProtocol(workflow, log, params.aligner, params.protocol)
     if (protocol_config['protocol'] == 'auto' && params.aligner !in ["cellranger", "cellrangerarc", "cellrangermulti"]) {
         error "Only cellranger supports `protocol = 'auto'`. Please specify the protocol manually!"
     }
@@ -276,6 +276,8 @@ workflow SCRNASEQ {
         ch_mtx_matrices = ch_mtx_matrices.mix( CELLRANGER_MULTI_ALIGN.out.cellrangermulti_mtx_raw, CELLRANGER_MULTI_ALIGN.out.cellrangermulti_mtx_filtered )
 
     }
+
+    ch_mtx_matrices.view() // TODO: remove this
 
     //
     // MODULE: Convert mtx matrices to h5ad

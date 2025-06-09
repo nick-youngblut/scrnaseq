@@ -32,7 +32,7 @@ workflow CELLRANGER_MULTI_ALIGN {
         .map{ meta ->
             def meta_clone = meta.clone()
             def data_dict  = meta_clone.find{ it.key == "${meta_clone.feature_type}" }
-            fastqs = data_dict?.value
+            def fastqs = data_dict?.value
             meta_clone.remove( data_dict?.key )
             [ meta_clone, fastqs ]
         }
@@ -113,18 +113,15 @@ workflow CELLRANGER_MULTI_ALIGN {
         // Prepare GTF
         //
         if ( !cellranger_gex_index || (!cellranger_vdj_index && !params.skip_cellrangermulti_vdjref) ) {
-
             // Filter GTF based on gene biotypes passed in params.modules
             CELLRANGER_MKGTF ( ch_gtf )
             ch_versions = ch_versions.mix(CELLRANGER_MKGTF.out.versions)
-
         }
 
         //
         // Prepare gex reference (Normal Ref)
         //
         if ( !cellranger_gex_index ) {
-
             // Make reference genome
             CELLRANGER_MKREF(
                 ch_fasta,
@@ -133,7 +130,6 @@ workflow CELLRANGER_MULTI_ALIGN {
             )
             ch_versions = ch_versions.mix(CELLRANGER_MKREF.out.versions)
             ch_cellranger_gex_index = CELLRANGER_MKREF.out.reference.ifEmpty { [] }
-
         } else {
             ch_cellranger_gex_index = cellranger_gex_index
         }
@@ -142,7 +138,6 @@ workflow CELLRANGER_MULTI_ALIGN {
         // Prepare vdj reference (Special)
         //
         if ( !cellranger_vdj_index ) {
-
             if ( !params.skip_cellrangermulti_vdjref  ) { // if user uses cellranger multi but does not have VDJ data
                 // Make reference genome
                 CELLRANGER_MKVDJREF(
@@ -210,7 +205,7 @@ workflow CELLRANGER_MULTI_ALIGN {
 }
 
 def parse_demultiplexed_output_channels(in_ch, pattern) {
-    out_ch =
+    def out_ch =
     in_ch.map { meta, mtx_files ->
         def desired_files = []
         mtx_files.each{ if ( it.toString().contains("${pattern}") ) { desired_files.add( it ) } }
@@ -222,7 +217,8 @@ def parse_demultiplexed_output_channels(in_ch, pattern) {
         meta_clone.input_type = pattern.contains('raw_') ? 'raw' : 'filtered' // add metadata for conversion workflow
         if ( mtx_files.toString().contains("per_sample_outs") ) {
             def demultiplexed_sample_id = mtx_files.toString().split('/per_sample_outs/')[1].split('/')[0]
-            meta_clone.id = demultiplexed_sample_id.toString()
+            // Create unique ID by combining original run ID with demultiplexed sample ID to avoid collisions
+            meta_clone.id = "${meta.id}_${demultiplexed_sample_id}".toString()
         }
         [ meta_clone, mtx_files ]
     }                    // check if output is from demultiplexed sample, if yes, correct meta.id for proper conversion naming
